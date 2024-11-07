@@ -1,7 +1,5 @@
 // NewsFeed.js
-
 import { useEffect, useState } from "react";
-//import "./styles.css";
 import "./NewsFeed.css";
 
 export default function NewsFeed() {
@@ -20,7 +18,6 @@ export default function NewsFeed() {
           throw new Error(`Error in fetching details`);
         }
         const data = await res.json();
-        console.log(data.results);
         setDisplay(data.results);
       } catch (error) {
         setError(error.message);
@@ -33,29 +30,38 @@ export default function NewsFeed() {
 
   return (
     <div className="news-feed">
-      {/* Headline for breaking news */}
-      <h2 className="breaking-news-headline">Breaking News</h2>
-
       {loading ? (
-        <h3 className="loading">Loading...</h3>
+        <div className="loading">Loading...</div>
       ) : error ? (
-        <h3 className="error">{error}</h3>
+        <div className="error">{error}</div>
       ) : display && Array.isArray(display) ? (
-        <div className="articles">
-          {display.map((result, index) => (
-            <div className="article" key={index}>
-              <img
-                src={result.image_url}
-                alt={result.title}
-                className="article-image"
-              />
-              <a href={result.link} target="_blank" rel="noopener noreferrer">
-                <h3 className="article-title">{result.title}</h3>
-              </a>
-              <p className="article-description">{result.description}</p>
-            </div>
-          ))}
-        </div>
+        <>
+          <div className="breaking-news-banner">Breaking News</div>
+          <div className="articles">
+            {display.map((result, index) => (
+              <div className="article" key={index} style={{ "--delay": index }}>
+                {result.image_url && (
+                  <img
+                    src={result.image_url}
+                    alt="Article"
+                    className="article-image"
+                  />
+                )}
+                <a
+                  href={result.link}
+                  className="article-title"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {result.title}
+                </a>
+                <p className="article-description">
+                  {result.description || "Click to read more..."}
+                </p>
+              </div>
+            ))}
+          </div>
+        </>
       ) : null}
     </div>
   );
